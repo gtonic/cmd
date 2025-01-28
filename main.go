@@ -1,38 +1,36 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net"
+
+	"github.com/gtonic/cmd/pkg/formatter/json"
+	"github.com/gtonic/cmd/pkg/formatter/text"
+)
+
+var (
+	jsonOutput = flag.Bool("json", false, "output in JSON format")
 )
 
 func main() {
+	flag.Parse()
+
 	interfaces, err := net.Interfaces()
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		return
 	}
 
-	for _, iface := range interfaces {
-		name := iface.Name
-		hw := iface.HardwareAddr
-		var macStr string
-		if len(hw) == 6 {
-			macStr = fmt.Sprintf("%02x:%02x:%02x:%02x:%02x:%02x",
-				hw[0], hw[1], hw[2], hw[3], hw[4], hw[5])
-		} else {
-			macStr = "N/A"
-		}
+	var formatter OutputFormatter
 
-		fmt.Printf("Interface: %s\nMAC Address: %s\n", name, macStr)
-
-		addrs, err := iface.Addrs()
-		if err != nil {
-			fmt.Printf("Error getting addresses for %s: %v\n", name, err)
-			continue
-		}
-		for _, addr := range addrs {
-			address := addr.String()
-			fmt.Printf("\t%s\n", address)
-		}
+	if *jsonOutput {
+		formatter = json.NewJSONFormatter()
+	} else {
+		formatter = text.NewTextFormatter()
 	}
+
+	output := formatter.Format(interfaces)
+
+	fmt.Println(output)
 }
