@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net"
 
-	json "github.com/gtonic/tool/formatter/json"
-	text "github.com/gtonic/tool/formatter/text"
+	json "github.com/gtonic/tool/format/json"
+	text "github.com/gtonic/tool/format/text"
 )
 
 var (
