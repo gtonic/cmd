@@ -1,3 +1,2 @@
-module github.com/gtonic/tool/format
-
+module github.com/gtonic/tool
 go 1.23.5
